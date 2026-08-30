@@ -39,6 +39,13 @@ class ra {
     const STATUS_COMPLETED = 'completed';
 
     /**
+     * The status value for a failed resource assignment.
+     *
+     * @var string
+     */
+    const STATUS_FAILED = 'failed';
+
+    /**
      * Derive the resource status from a Moodle completion state.
      *
      * @param int|null $completionstate The module completion state.
@@ -49,10 +56,13 @@ class ra {
             return self::STATUS_PENDING;
         }
 
+        if ($completionstate === COMPLETION_COMPLETE_FAIL) {
+            return self::STATUS_FAILED;
+        }
+
         $completedstates = [
             COMPLETION_COMPLETE,
             COMPLETION_COMPLETE_PASS,
-            COMPLETION_COMPLETE_FAIL,
         ];
 
         return in_array($completionstate, $completedstates, true)

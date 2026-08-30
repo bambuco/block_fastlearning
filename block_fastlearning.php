@@ -85,17 +85,7 @@ class block_fastlearning extends block_base {
         $this->content->text = $renderer->render_block_content($items);
 
         if (!empty($items)) {
-            $this->page->requires->js_amd_inline("
-                require(['jquery'], function($) {
-                    $(document).on('click', '[data-fastlearning-open=\"modal\"]', function(e) {
-                        e.preventDefault();
-                        var url = $(this).attr('href');
-                        if (url) {
-                            window.open(url, 'fastlearning_modal', 'width=960,height=700,resizable=yes,scrollbars=yes');
-                        }
-                    });
-                });
-            ");
+            $this->page->requires->js_call_amd('block_fastlearning/main', 'init');
         }
 
         return $this->content;

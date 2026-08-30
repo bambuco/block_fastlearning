@@ -31,8 +31,9 @@ if ($ADMIN->fulltree) {
         get_string('cm_open_mode_desc', 'block_fastlearning'),
         'newwindow',
         [
-            'newwindow' => get_string('cm_open_mode_newwindow', 'block_fastlearning'),
             'modal' => get_string('cm_open_mode_modal', 'block_fastlearning'),
+            'newwindow' => get_string('cm_open_mode_newwindow', 'block_fastlearning'),
+            'selfwindow' => get_string('cm_open_mode_selfwindow', 'block_fastlearning'),
         ]
     ));
 }

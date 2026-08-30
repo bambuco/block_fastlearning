@@ -57,7 +57,7 @@
             </div>
             <div class="mt-2 d-flex align-items-center justify-content-between gap-2">
                 <span class="{{#isoverdue}}text-danger{{/isoverdue}}{{^isoverdue}}text-success{{/isoverdue}} fw-semibold">{{remaining}}</span>
-                <a href="{{cmurl}}" class="btn btn-sm btn-primary" {{{linkattributes}}}>{{openlabel}}</a>
+                <a href="{{cmurl}}" class="btn btn-sm btn-primary" {{{linkattributes}}} title="{{#str}}viewra_title, block_fastlearning{{/str}}">{{openlabel}}</a>
             </div>
         </div>
     {{/items}}

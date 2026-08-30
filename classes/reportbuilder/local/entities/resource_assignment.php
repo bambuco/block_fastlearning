@@ -191,6 +191,7 @@ class resource_assignment extends base {
                 return match ($status) {
                     ra::STATUS_PENDING => get_string('status_pending', 'block_fastlearning'),
                     ra::STATUS_COMPLETED => get_string('status_completed', 'block_fastlearning'),
+                    ra::STATUS_FAILED => get_string('status_failed', 'block_fastlearning'),
                     default => format_string($status),
                 };
             });
@@ -239,6 +240,7 @@ class resource_assignment extends base {
             ->set_options([
                 ra::STATUS_PENDING => get_string('status_pending', 'block_fastlearning'),
                 ra::STATUS_COMPLETED => get_string('status_completed', 'block_fastlearning'),
+                ra::STATUS_FAILED => get_string('status_failed', 'block_fastlearning'),
             ]);
 
         $filters[] = (new filter(

@@ -63,7 +63,15 @@ class controller {
         $records = $DB->get_records_sql($sql, $params);
         $items = [];
         $now = time();
-        $openmode = get_config('block_fastlearning', 'cm_open_mode') === 'modal' ? 'modal' : 'window';
+        $openmodes = ['modal', 'newwindow', 'selfwindow'];
+        $configuredmode = get_config('block_fastlearning', 'cm_open_mode');
+        $openmode = in_array($configuredmode, $openmodes, true) ? $configuredmode : 'newwindow';
+        $linkattributesbymode = [
+            'modal' => 'data-fastlearning-open="modal"',
+            'newwindow' => 'target="_blank" rel="noopener noreferrer"',
+            'selfwindow' => '',
+        ];
+        $linkattributes = $linkattributesbymode[$openmode];
 
         foreach ($records as $record) {
             $cm = get_coursemodule_from_id('', (int) $record->cmid, 0, false, MUST_EXIST);
@@ -77,9 +85,6 @@ class controller {
             $timeassigned = (int) ($record->timeassigned ?: $record->timecreated);
             $deadline = ra::calculate_deadline($timeassigned, urgencylevel::get_level_minutes((int) $record->urgencylevel));
             $remainingseconds = $deadline - $now;
-            $linkattributes = $openmode === 'modal'
-                ? 'data-fastlearning-open="modal"'
-                : 'target="_blank" rel="noopener noreferrer"';
 
             $items[] = [
                 'id' => (int) $record->id,
