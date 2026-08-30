@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/fastlearning/db" VERSION="20260813" COMMENT="XMLDB file for Moodle block_fastlearning"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_fastlearning_ra" COMMENT="Stores the Learning Resources (RA) assigned to users">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the student assigned to the RA"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the course where the RA is assigned"/>
+        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the course module instance (nullable if it is just a need draft)"/>
+        <FIELD NAME="global" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether the RA is assigned at the site level (1) or course level (0)"/>
+        <FIELD NAME="competencyid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the competency assigned at the site level (optional)"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Manual name of the RA in case it does not have an associated competency"/>
+        <FIELD NAME="urgencylevel" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Assigned urgency level (0 is the highest priority)"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="15" NOTNULL="true" DEFAULT="pending" SEQUENCE="false" COMMENT="Current status of the RA (e.g., pending, finished)"/>
+        <FIELD NAME="timeassigned" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="When assigning the cm"/>
+        <FIELD NAME="timecompleted" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid_fk" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="courseid_fk" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="cmid_fk" TYPE="foreign" FIELDS="cmid" REFTABLE="course_modules" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid_idx" UNIQUE="false" FIELDS="userid"/>
+        <INDEX NAME="cmid_idx" UNIQUE="false" FIELDS="cmid"/>
+        <INDEX NAME="status_idx" UNIQUE="false" FIELDS="status"/>
+        <INDEX NAME="urgencylevel_idx" UNIQUE="false" FIELDS="urgencylevel"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="block_fastlearning_levels" COMMENT="Stores the urgency levels configuration for the block">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="urgencylevel" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Numeric priority level (0 is the highest priority)"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the urgency level (e.g., Critical, Normal)"/>
+        <FIELD NAME="minutes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Minutes allowed to complete the resource before it expires"/>
+        <FIELD NAME="color" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="#dc3545" SEQUENCE="false"/>
+        <FIELD NAME="icon" TYPE="char" LENGTH="100" NOTNULL="true" DEFAULT="core:i/warning" SEQUENCE="false" COMMENT="Moodle pix icon name and class (e.g., core:a/search or mod_scorm:passed)"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="urgencylevel_idx" UNIQUE="true" FIELDS="urgencylevel"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

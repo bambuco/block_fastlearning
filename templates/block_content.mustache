@@ -1,0 +1,70 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fastlearning/block_content
+
+    This template renders the template content area for the block.
+
+    Example context (json):
+    {
+        "items": [{
+            "name": "Resource 1",
+            "cmname": "Course Module Name",
+            "cmurl": "https://moodle_wwwroot_url/mod/resource/view.php?id=123",
+            "openlabel": "Open",
+            "levelname": "Level 1",
+            "levelcolor": "#0073e6",
+            "leveliconhtml": "<i class=\"icon fa fa-star\"></i>",
+            "remaining": "2 days left",
+            "isoverdue": false
+        }],
+        "emptymessage": "No resources available."
+    }
+}}
+
+<div class="list-group block-fastlearning-resources">
+    {{#items}}
+        <div class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="resource-level-badge" style="--fastlearning-level-color: {{levelcolor}};">
+                        <span class="badge rounded-pill">
+                            {{{leveliconhtml}}}
+                        </span>
+                        <span>
+                            {{levelname}}
+                        </span>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">{{name}}</div>
+                        <small class="text-muted">{{cmname}}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2 d-flex align-items-center justify-content-between gap-2">
+                <span class="{{#isoverdue}}text-danger{{/isoverdue}}{{^isoverdue}}text-success{{/isoverdue}} fw-semibold">{{remaining}}</span>
+                <a href="{{cmurl}}" class="btn btn-sm btn-primary" {{{linkattributes}}}>{{openlabel}}</a>
+            </div>
+        </div>
+    {{/items}}
+    {{^items}}
+        <div class="list-group-item text-muted">{{emptymessage}}</div>
+    {{/items}}
+</div>
+<div class="box-buttons">
+    <a href="{{resourcesurl}}" class="btn btn-secondary btn-sm">{{#str}}resources, block_fastlearning{{/str}}</a>
+</div>

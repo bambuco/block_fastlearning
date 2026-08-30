@@ -1,0 +1,209 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fastlearning/resource_form
+
+    Two-step form for creating or editing a learning resource assignment.
+
+    Example context (json):
+    {
+        "action": "manage.php",
+        "cancelurl": "resources.php",
+        "sesskey": "abc123",
+        "courseid": 2,
+        "issite": false,
+        "hascompetencies": true,
+        "competencies": [{"id": 4, "name": "Communication", "selected": true}],
+        "users": [{"id": 7, "name": "Student One", "selected": true}],
+        "haslevels": true,
+        "levels": [{"value": 0, "name": "Urgent", "color": "#dc3545", "selected": true}],
+        "name": "Communication",
+        "coursemodules": [],
+        "haserrors": false
+    }
+}}
+<form method="post" action="{{action}}" id="block-fastlearning-ra-wizard" class="fastlearning-wizard">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <input type="hidden" name="courseid" value="{{courseid}}">
+
+    <ol class="fastlearning-wizard-progress" aria-label="{{#str}}wizardprogress, block_fastlearning{{/str}}">
+        <li class="active" data-region="wizard-progress-step" data-step="1">
+            {{#str}}wizardstepone, block_fastlearning{{/str}}
+        </li>
+        <li data-region="wizard-progress-step" data-step="2">
+            {{#str}}wizardsteptwo, block_fastlearning{{/str}}
+        </li>
+    </ol>
+
+    {{#haserrors}}
+        <div class="alert alert-danger" role="alert">
+            <ul class="mb-0">
+                {{#errors}}<li>{{message}}</li>{{/errors}}
+            </ul>
+        </div>
+    {{/haserrors}}
+
+    <section data-region="wizard-step" data-step="1">
+        <h3>{{#str}}wizardstepone, block_fastlearning{{/str}}</h3>
+        <p class="text-muted">{{#str}}wizardsteponehelp, block_fastlearning{{/str}}</p>
+
+        <div class="mb-3 row fitem" data-region="course-selector">
+            <div class="col-md-3 col-form-label col-sm-3 d-flex">
+                <label class="form-label" for="global">{{#str}}global, block_fastlearning{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <input type="checkbox" id="global" name="global" value="1" {{#global}}checked{{/global}}>
+            </div>
+        </div>
+
+        <div class="mb-3" data-region="user-selector">
+            <div class="mb-3 row fitem" data-region="course-selector">
+                <div class="col-md-3 col-form-label col-sm-3 d-flex">
+                    <label class="form-label" for="id_userid">{{#str}}userid, block_fastlearning{{/str}}</label>
+                </div>
+                <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                    <select id="id_userid" name="userid" class="form-select" data-courseid="{{courseid}}">
+                        <option value=""></option>
+                        {{#users}}
+                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/users}}
+                    </select>
+                </div>
+            </div>
+            <div class="invalid-feedback" data-error-for="userid">{{#str}}required{{/str}}</div>
+        </div>
+        <div class="alert alert-info d-none" data-empty-list="users">
+            {{#str}}noeligibleusers, block_fastlearning{{/str}}
+        </div>
+
+        {{#hascompetencies}}
+            <div class="mb-3">
+                <div class="mb-3 row fitem" data-region="course-selector">
+                    <div class="col-md-3 col-form-label col-sm-3 d-flex">
+                        <label class="form-label" for="id_competencyid">{{#str}}competencyid, block_fastlearning{{/str}}</label>
+                    </div>
+                    <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                        <select id="id_competencyid" name="competencyid" class="form-select">
+                            <option value=""></option>
+                            {{#competencies}}
+                                <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                            {{/competencies}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {{/hascompetencies}}
+        {{^hascompetencies}}
+            <input type="hidden" id="id_competencyid" name="competencyid" value="0">
+            <div class="alert alert-info">{{#str}}nocompetencies, block_fastlearning{{/str}}</div>
+        {{/hascompetencies}}
+
+        <div class="mb-3">
+            <div class="mb-3 row fitem" data-region="course-selector">
+                <div class="col-md-3 col-form-label col-sm-3 d-flex">
+                    <label class="form-label" for="id_name">{{#str}}raname, block_fastlearning{{/str}}</label>
+                </div>
+                <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                    <input type="text" id="id_name" name="name" value="{{name}}" maxlength="255" class="form-control" required>
+                    <div class="invalid-feedback" data-error-for="name">{{#str}}required{{/str}}</div>
+                </div>
+            </div>
+        </div>
+
+        {{#haslevels}}
+            <fieldset class="mb-3">
+                <legend class="form-label fs-6">{{#str}}urgencylevel, block_fastlearning{{/str}}</legend>
+                <div class="fastlearning-urgency-options">
+                    {{#levels}}
+                        <label class="fastlearning-urgency-option" style="--fastlearning-level-color: {{color}}">
+                            <input type="radio" name="urgencylevel" value="{{value}}" {{#selected}}checked{{/selected}}>
+                            <span class="fastlearning-urgency-content">
+                                <span class="fastlearning-urgency-icon">{{{iconhtml}}}</span>
+                                <span>{{name}}</span>
+                            </span>
+                        </label>
+                    {{/levels}}
+                </div>
+                <div class="invalid-feedback" data-error-for="urgencylevel">{{#str}}required{{/str}}</div>
+            </fieldset>
+        {{/haslevels}}
+        {{^haslevels}}
+            <input type="hidden" name="urgencylevel" value="-1">
+            <div class="alert alert-info">{{#str}}nolevels, block_fastlearning{{/str}}</div>
+        {{/haslevels}}
+
+        <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-primary" data-action="wizard-next">{{#str}}next{{/str}}</button>
+        </div>
+    </section>
+
+    <section data-region="wizard-step" data-step="2" class="d-none">
+        <h3>{{#str}}wizardsteptwo, block_fastlearning{{/str}}</h3>
+        <p class="text-muted">{{#str}}wizardsteptwohelp, block_fastlearning{{/str}}</p>
+
+        {{#issite}}
+            <div class="mb-3 row fitem" data-region="course-selector">
+                <div class="col-md-3 col-form-label col-sm-3 d-flex">
+                    <label class="form-label" for="id_modulecourseid">{{#str}}course{{/str}}</label>
+                </div>
+                <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                    <select id="id_modulecourseid" name="modulecourseid" class="form-select">
+                        <option value=""></option>
+                        {{#courses}}
+                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/courses}}
+                    </select>
+                </div>
+            </div>
+            <div class="alert alert-info d-none" data-empty-list="courses">
+                {{#str}}nousercourses, block_fastlearning{{/str}}
+            </div>
+        {{/issite}}
+        {{^issite}}
+            <input type="hidden" id="id_modulecourseid" name="modulecourseid" value="{{modulecourseid}}">
+        {{/issite}}
+
+        <div class="mb-3 row fitem" data-region="cm-selector">
+            <div class="col-md-3 col-form-label col-sm-3 d-flex">
+                <label class="form-label" for="id_cmid">{{#str}}cmid, block_fastlearning{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select id="id_cmid" name="cmid" class="form-select" data-contextcourseid="{{courseid}}">
+                    <option value=""></option>
+                    {{#coursemodules}}
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                    {{/coursemodules}}
+                </select>
+                <div class="invalid-feedback" data-error-for="cmid">{{#str}}required{{/str}}</div>
+            </div>
+        </div>
+        <div class="alert alert-info d-none" data-empty-list="coursemodules">
+            {{#str}}noeligiblecoursemodules, block_fastlearning{{/str}}
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button type="button" class="btn btn-secondary" data-action="wizard-previous">{{#str}}previous{{/str}}</button>
+            <button type="submit" class="btn btn-outline-primary" name="action" value="savewithoutcm">
+                {{#str}}finishwithoutcm, block_fastlearning{{/str}}
+            </button>
+            <button type="submit" class="btn btn-primary" name="action" value="savewithcm">
+                {{#str}}assignandsave, block_fastlearning{{/str}}
+            </button>
+            <a href="{{cancelurl}}" class="btn btn-link">{{#str}}cancel{{/str}}</a>
+        </div>
+    </section>
+</form>

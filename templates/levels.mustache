@@ -1,0 +1,23 @@
+{{!
+    @template block_fastlearning/levels
+
+    Urgency level management interface.
+}}
+<div id="block-fastlearning-levels">
+    <div data-region="levels-manager">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+            <p class="mb-0">{{#str}} levelsintro, block_fastlearning {{/str}}</p>
+            <button type="button" class="btn btn-primary text-nowrap" data-action="add-level">
+                {{#pix}} t/add, core {{/pix}} {{#str}} addlevel, block_fastlearning {{/str}}
+            </button>
+        </div>
+        <p class="alert alert-info {{#haslevels}}d-none{{/haslevels}}" data-region="empty-message">
+            {{#str}} nolevels, block_fastlearning {{/str}}
+        </p>
+        <ul class="list-group" data-region="levels-list">
+            {{#levels}}
+                {{> block_fastlearning/level_item }}
+            {{/levels}}
+        </ul>
+    </div>
+</div>

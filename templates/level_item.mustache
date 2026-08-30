@@ -1,0 +1,26 @@
+{{!
+    @template block_fastlearning/level_item
+
+    One sortable urgency level.
+}}
+<li class="list-group-item d-flex align-items-center gap-3" data-level-id="{{id}}" data-name="{{name}}" data-minutes="{{minutes}}" data-color="{{color}}" data-icon="{{icon}}">
+    <button type="button" class="btn btn-link text-muted p-1" data-drag-type="move"
+            title="{{#str}} movelevel, block_fastlearning, {{name}} {{/str}}">
+        {{#pix}} i/dragdrop, core {{/pix}}
+    </button>
+    <span class="fastlearning-level-icon" style="--fastlearning-level-color: {{color}}">
+        {{#iconinfo}}{{#pix}} {{name}}, {{component}} {{/pix}}{{/iconinfo}}
+    </span>
+    <div class="flex-grow-1">
+        <div class="fw-bold">{{name}}</div>
+        <small class="text-muted">{{formatedminutes}}</small>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-secondary" data-action="edit-level" data-level-id="{{id}}">
+            {{#pix}} t/edit, core {{/pix}} {{#str}} edit, core {{/str}}
+        </button>
+        <button type="button" class="btn btn-danger" data-action="delete-level" data-level-id="{{id}}">
+            {{#pix}} t/delete, core {{/pix}} {{#str}} delete, core {{/str}}
+        </button>
+    </div>
+</li>

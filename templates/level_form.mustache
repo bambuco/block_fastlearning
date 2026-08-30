@@ -1,0 +1,47 @@
+{{!
+    @template block_fastlearning/level_form
+
+    JavaScript modal form for an urgency level.
+}}
+<form data-region="level-form">
+    <input type="hidden" name="id" value="{{id}}">
+    <div class="mb-3">
+        <label class="form-label" for="fastlearning-level-name">{{#str}} levelname, block_fastlearning {{/str}}</label>
+        <input class="form-control" id="fastlearning-level-name" name="name" type="text" maxlength="255"
+               value="{{name}}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="fastlearning-level-minutes">{{#str}} minutes, block_fastlearning {{/str}}</label>
+        <input class="form-control" id="fastlearning-level-minutes" name="minutes" type="number" min="0"
+               value="{{minutes}}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="fastlearning-level-color">{{#str}} color, block_fastlearning {{/str}}</label>
+        <div class="form-colourpicker defaultsnext">
+            <div class="admin_colourpicker clearfix"></div>
+            <input class="form-control text-ltr" id="fastlearning-level-color" name="color" type="text" size="12"
+                   value="{{color}}" pattern="#[0-9a-fA-F]{6}" required>
+        </div>
+    </div>
+    <div class="mb-3" data-region="icon-picker">
+        <label class="form-label d-block">{{#str}} icon, block_fastlearning {{/str}}</label>
+        <input type="hidden" name="icon" value="{{icon}}" required>
+        <button type="button" class="btn btn-secondary" data-action="toggle-icons" aria-expanded="false">
+            <span data-region="selected-icon">{{{selectediconhtml}}}</span>
+            {{#str}} selecticon, block_fastlearning {{/str}}
+        </button>
+        <div class="fastlearning-icon-picker border rounded p-2 mt-2 d-none" data-region="icon-options">
+            <label class="visually-hidden" for="fastlearning-icon-search">{{#str}} iconsearch, block_fastlearning {{/str}}</label>
+            <input class="form-control mb-2" id="fastlearning-icon-search" type="search"
+                   placeholder="{{#str}} iconsearch, block_fastlearning {{/str}}" data-action="filter-icons">
+            <div class="fastlearning-icon-grid">
+                {{#icons}}
+                    <button type="button" class="btn btn-light {{#selected}}active{{/selected}}" data-action="select-icon"
+                            data-icon="{{identifier}}" title="{{identifier}}" aria-label="{{identifier}}">
+                        {{{html}}}
+                    </button>
+                {{/icons}}
+            </div>
+        </div>
+    </div>
+</form>
