@@ -36,12 +36,20 @@ if ($ADMIN->fulltree) {
             'selfwindow' => get_string('cm_open_mode_selfwindow', 'block_fastlearning'),
         ]
     ));
+
+    $generalsettings->add(new admin_setting_configduration(
+        'block_fastlearning/refresh_interval',
+        get_string('refresh_interval', 'block_fastlearning'),
+        get_string('refresh_interval_desc', 'block_fastlearning'),
+        60,
+        MINSECS
+    ));
 }
 
 $settings->add('block_fastlearning_settings', $generalsettings);
 
 $externalpage = new admin_externalpage(
-    'block_fastlearning',
+    'block_fastlearning_levels',
     get_string('managelevels', 'block_fastlearning'),
     new moodle_url("/blocks/fastlearning/levels.php"),
     'block/fastlearning:manage'

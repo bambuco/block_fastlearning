@@ -97,7 +97,9 @@ final class api_test extends advanced_testcase {
             urgencylevel: 0,
             name: 'Customer Service Refinement',
             global: 1,
-            autoresolvecm: true
+            autoresolvecm: true,
+            component: 'local_alianza',
+            itemid: 123
         );
 
         $this->assertNotEmpty($ra->id);
@@ -108,12 +110,16 @@ final class api_test extends advanced_testcase {
         $this->assertEquals('pending', $ra->status);
         $this->assertEquals(0, $ra->urgencylevel);
         $this->assertEquals('Customer Service Refinement', $ra->name);
+        $this->assertEquals('local_alianza', $ra->component);
+        $this->assertEquals(123, $ra->itemid);
         $this->assertNotNull($ra->timeassigned);
 
         // Verify in DB.
         $dbrecord = $DB->get_record('block_fastlearning_ra', ['id' => $ra->id]);
         $this->assertNotNull($dbrecord);
         $this->assertEquals($page->cmid, $dbrecord->cmid);
+        $this->assertEquals('local_alianza', $dbrecord->component);
+        $this->assertEquals(123, $dbrecord->itemid);
     }
 
     public function test_report_resource_need_without_cm_and_invalid_user(): void {
@@ -134,6 +140,8 @@ final class api_test extends advanced_testcase {
         $this->assertNotEmpty($ra->id);
         $this->assertNull($ra->cmid);
         $this->assertNull($ra->timeassigned);
+        $this->assertNull($ra->component);
+        $this->assertNull($ra->itemid);
         $this->assertEquals('pending', $ra->status);
 
         // Exception when user is invalid.

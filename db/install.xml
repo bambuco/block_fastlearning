@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/fastlearning/db" VERSION="20260813" COMMENT="XMLDB file for Moodle block_fastlearning"
+<XMLDB PATH="blocks/fastlearning/db" VERSION="20260831" COMMENT="XMLDB file for Moodle block_fastlearning"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -13,6 +13,8 @@
         <FIELD NAME="global" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether the RA is assigned at the site level (1) or course level (0)"/>
         <FIELD NAME="competencyid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the competency assigned at the site level (optional)"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Manual name of the RA in case it does not have an associated competency"/>
+        <FIELD NAME="component" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="Component that created the RA"/>
+        <FIELD NAME="itemid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the source item in the component"/>
         <FIELD NAME="urgencylevel" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Assigned urgency level (0 is the highest priority)"/>
         <FIELD NAME="status" TYPE="char" LENGTH="15" NOTNULL="true" DEFAULT="pending" SEQUENCE="false" COMMENT="Current status of the RA (e.g., pending, finished)"/>
         <FIELD NAME="timeassigned" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="When assigning the cm"/>
@@ -31,6 +33,7 @@
         <INDEX NAME="cmid_idx" UNIQUE="false" FIELDS="cmid"/>
         <INDEX NAME="status_idx" UNIQUE="false" FIELDS="status"/>
         <INDEX NAME="urgencylevel_idx" UNIQUE="false" FIELDS="urgencylevel"/>
+        <INDEX NAME="component_itemid_idx" UNIQUE="false" FIELDS="component, itemid"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="block_fastlearning_levels" COMMENT="Stores the urgency levels configuration for the block">

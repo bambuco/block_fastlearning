@@ -64,4 +64,11 @@ $functions = [
         'ajax' => true,
         'readonlysession' => true,
     ],
+    'block_fastlearning_get_pending_resources' => [
+        'classname' => block_fastlearning\external\get_pending_resources::class,
+        'description' => 'Fetch the current user pending Fast learning resources for the block',
+        'type' => 'read',
+        'ajax' => true,
+        'readonlysession' => true,
+    ],
 ];

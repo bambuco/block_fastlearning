@@ -30,15 +30,16 @@
             "levelcolor": "#0073e6",
             "leveliconhtml": "<i class=\"icon fa fa-star\"></i>",
             "remaining": "2 days left",
+            "remainingseconds": 172800,
             "isoverdue": false
         }],
         "emptymessage": "No resources available."
     }
 }}
 
-<div class="list-group block-fastlearning-resources">
+<div class="list-group block-fastlearning-resources" data-fastlearning-list>
     {{#items}}
-        <div class="list-group-item">
+        <div class="list-group-item" data-fastlearning-item data-id="{{id}}">
             <div class="d-flex justify-content-between align-items-start gap-2">
                 <div class="d-flex align-items-center gap-2">
                     <div class="resource-level-badge" style="--fastlearning-level-color: {{levelcolor}};">
@@ -56,7 +57,7 @@
                 </div>
             </div>
             <div class="mt-2 d-flex align-items-center justify-content-between gap-2">
-                <span class="{{#isoverdue}}text-danger{{/isoverdue}}{{^isoverdue}}text-success{{/isoverdue}} fw-semibold">{{remaining}}</span>
+                <span class="{{#isoverdue}}text-danger{{/isoverdue}}{{^isoverdue}}text-success{{/isoverdue}} fw-semibold" data-fastlearning-remaining data-seconds="{{remainingseconds}}">{{remaining}}</span>
                 <a href="{{cmurl}}" class="btn btn-sm btn-primary" {{{linkattributes}}} title="{{#str}}viewra_title, block_fastlearning{{/str}}">{{openlabel}}</a>
             </div>
         </div>

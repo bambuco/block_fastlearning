@@ -28,12 +28,12 @@ use block_fastlearning\local\urgencylevel;
  */
 class renderer extends plugin_renderer_base {
     /**
-     * Render the block pending items.
+     * Build the template context shared by the server render and the AJAX refresh service.
      *
      * @param array $items Pending resource items.
-     * @return string HTML rendered by the Mustache template.
+     * @return array The block_content template context.
      */
-    public function render_block_content(array $items): string {
+    public function get_block_content_context(array $items): array {
         foreach ($items as $key => $item) {
             $icon = explode(':', $item['levelicon'], 2);
             if (count($icon) !== 2) {
@@ -50,14 +50,22 @@ class renderer extends plugin_renderer_base {
             $courseid ? ['courseid' => $courseid] : []
         );
 
-        $data = [
+        return [
             'items' => array_values($items),
             'emptymessage' => get_string('nothingpending', 'block_fastlearning'),
             'openlabel' => get_string('open', 'block_fastlearning'),
             'resourcesurl' => $resourcesurl->out(false),
         ];
+    }
 
-        return parent::render_from_template('block_fastlearning/block_content', $data);
+    /**
+     * Render the block pending items.
+     *
+     * @param array $items Pending resource items.
+     * @return string HTML rendered by the Mustache template.
+     */
+    public function render_block_content(array $items): string {
+        return parent::render_from_template('block_fastlearning/block_content', $this->get_block_content_context($items));
     }
 
     /**

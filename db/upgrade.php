@@ -31,5 +31,30 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_block_fastlearning_upgrade(int $oldversion): bool {
+    global $DB;
+
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2026083100) {
+        $table = new xmldb_table('block_fastlearning_ra');
+        $componentfield = new xmldb_field('component', XMLDB_TYPE_CHAR, '100', null, null, null, null, 'name');
+        $itemidfield = new xmldb_field('itemid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'component');
+        $index = new xmldb_index('component_itemid_idx', XMLDB_INDEX_NOTUNIQUE, ['component', 'itemid']);
+
+        if (!$dbman->field_exists($table, $componentfield)) {
+            $dbman->add_field($table, $componentfield);
+        }
+
+        if (!$dbman->field_exists($table, $itemidfield)) {
+            $dbman->add_field($table, $itemidfield);
+        }
+
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        upgrade_block_savepoint(true, 2026083100, 'fastlearning');
+    }
+
     return true;
 }

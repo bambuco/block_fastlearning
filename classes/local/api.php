@@ -43,8 +43,10 @@ class api {
      * @param int $urgencylevel Numeric priority level (0 is highest).
      * @param string|null $name Descriptive name override.
      * @param bool $autoresolvecm Whether to auto-resolve cmid from competency.
+    * @param string|null $component Component that created the RA.
+    * @param int|null $itemid Source item ID in the component.
      * @return object The created block_fastlearning_ra record.
-     * @throws invalid_parameter_exception If user does not exist.
+    * @throws invalid_parameter_exception If user or source reference is invalid.
      */
     public static function report_resource_need(
         int $userid,
@@ -54,12 +56,22 @@ class api {
         bool|int $global = 1,
         int $urgencylevel = 0,
         ?string $name = null,
-        bool $autoresolvecm = true
+        bool $autoresolvecm = true,
+        ?string $component = null,
+        ?int $itemid = null
     ): object {
         global $DB;
 
         if ($userid <= 0 || !$DB->record_exists('user', ['id' => $userid, 'deleted' => 0])) {
             throw new invalid_parameter_exception(get_string('invaliduser', 'error'));
+        }
+
+        $component = $component !== null ? trim($component) : null;
+        if ($component === '') {
+            $component = null;
+        }
+        if (($component === null) !== ($itemid === null)) {
+            throw new invalid_parameter_exception(get_string('invalidsource', 'block_fastlearning'));
         }
 
         $competencyid = null;
@@ -93,6 +105,8 @@ class api {
             'global' => $global ? 1 : 0,
             'competencyid' => $competencyid,
             'name' => $name !== null ? trim($name) : null,
+            'component' => $component,
+            'itemid' => $itemid,
             'urgencylevel' => $urgencylevel,
             'status' => ra::STATUS_PENDING,
             'timeassigned' => $cmid ? $now : null,

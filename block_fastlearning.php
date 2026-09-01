@@ -82,11 +82,18 @@ class block_fastlearning extends block_base {
         $items = controller::get_pending_for_user($USER->id, $courseid);
 
         $renderer = $this->page->get_renderer('block_fastlearning');
-        $this->content->text = $renderer->render_block_content($items);
+        $containerid = 'block-fastlearning-' . $this->instance->id;
+        $this->content->text = html_writer::div(
+            $renderer->render_block_content($items),
+            'block-fastlearning-instance',
+            ['id' => $containerid]
+        );
 
-        if (!empty($items)) {
-            $this->page->requires->js_call_amd('block_fastlearning/main', 'init');
-        }
+        $this->page->requires->js_call_amd('block_fastlearning/main', 'init', [[
+            'containerid' => $containerid,
+            'courseid' => $courseid,
+            'refreshinterval' => (int) (get_config('block_fastlearning', 'refresh_interval') ?: 0),
+        ]]);
 
         return $this->content;
     }

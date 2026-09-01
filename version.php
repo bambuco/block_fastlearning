@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'block_fastlearning';
 $plugin->release      = '1.0';
-$plugin->version      = 2026081401;
+$plugin->version      = 2026090100;
 $plugin->requires     = 2024100700;
 $plugin->supported    = [405, 502];
 $plugin->maturity     = MATURITY_STABLE;
