@@ -16,6 +16,8 @@
 
 namespace block_fastlearning;
 
+use PHPUnit\Framework\Attributes\CoversFunction;
+
 /**
  * Tests for Fast learning
  *
@@ -24,11 +26,14 @@ namespace block_fastlearning;
  * @copyright  2026 David Herney @ BambuCo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[CoversFunction('get_config')]
 final class lib_test extends \advanced_testcase {
     /**
-     * Example of a unittest
+     * Tests that the plugin is properly installed.
      *
-     * TODO change the 'covers' tag to the class or function in the plugin.
+     * Validates that the block_fastlearning plugin configuration is available and contains
+     * a version number, indicating successful installation.
+     *
      * @covers ::get_config
      */
     public function test_plugin_installed(): void {

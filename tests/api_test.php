@@ -31,6 +31,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(fastlearning_api::class)]
 final class api_test extends advanced_testcase {
+    /**
+     * Tests competency resolution by ID and IDNumber.
+     *
+     * Validates that competencies can be resolved using either their numeric ID or their
+     * unique IDNumber, and that non-existent competencies return null.
+     *
+     * @covers \block_fastlearning\local\api::resolve_competency
+     */
     public function test_resolve_competency_by_id_and_idnumber(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -56,6 +64,16 @@ final class api_test extends advanced_testcase {
         $this->assertNull($notfound);
     }
 
+    /**
+     * Tests competency module resolution and resource need reporting.
+     *
+     * Validates the ability to resolve learning modules associated with specific competencies
+     * for a user, and tests the full workflow of reporting a resource need using competency codes
+     * with automatic module resolution.
+     *
+     * @covers \block_fastlearning\local\api::resolve_competency_module
+     * @covers \block_fastlearning\local\api::report_resource_need
+     */
     public function test_resolve_competency_module_and_report_resource_need(): void {
         global $DB;
 
@@ -122,6 +140,14 @@ final class api_test extends advanced_testcase {
         $this->assertEquals(123, $dbrecord->itemid);
     }
 
+    /**
+     * Tests resource need reporting without competency module and with invalid user.
+     *
+     * Validates that resource needs can be created without module resolution and that
+     * invalid user IDs are properly rejected with an exception.
+     *
+     * @covers \block_fastlearning\local\api::report_resource_need
+     */
     public function test_report_resource_need_without_cm_and_invalid_user(): void {
         $this->resetAfterTest();
         $this->setAdminUser();

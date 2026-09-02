@@ -36,6 +36,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class urgencylevel_test extends advanced_testcase {
     /**
      * The AJAX service creates and updates a level.
+     *
+     * @covers \block_fastlearning\external\save_level::execute
      */
     public function test_save_level_service_creates_and_updates_level(): void {
         global $DB;
@@ -55,6 +57,8 @@ final class urgencylevel_test extends advanced_testcase {
 
     /**
      * Reordering persists sequential priorities without violating the unique index.
+     *
+     * @covers \block_fastlearning\external\reorder_levels::execute
      */
     public function test_reorder_levels_service_updates_priorities(): void {
         $this->resetAfterTest();
@@ -73,6 +77,8 @@ final class urgencylevel_test extends advanced_testcase {
 
     /**
      * Deleting a level compacts priorities while preserving assignments to later levels.
+     *
+     * @covers \block_fastlearning\external\delete_level::execute
      */
     public function test_delete_level_service_compacts_priorities(): void {
         global $DB;
@@ -103,6 +109,8 @@ final class urgencylevel_test extends advanced_testcase {
 
     /**
      * A level assigned to a resource cannot be deleted.
+     *
+     * @covers \block_fastlearning\external\delete_level::execute
      */
     public function test_delete_level_service_rejects_level_in_use(): void {
         global $DB;

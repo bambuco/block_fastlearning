@@ -31,6 +31,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(resolve_pending_competency_modules::class)]
 final class resolve_pending_competency_modules_test extends advanced_testcase {
+    /**
+     * Tests that pending resource assignments are resolved correctly without overwriting data.
+     *
+     * Verifies that the task only updates pending resource assignments with null cmid values,
+     * respects course-level restrictions, ignores completed assignments, and does not overwrite
+     * already assigned modules or competency mismatches.
+     *
+     * @covers \block_fastlearning\task\resolve_pending_competency_modules::execute
+     */
     public function test_resolves_pending_assignments_without_overwriting_other_records(): void {
         global $DB;
 

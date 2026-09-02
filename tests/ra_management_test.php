@@ -45,6 +45,13 @@ final class ra_management_test extends advanced_testcase {
         require_once($CFG->libdir . '/completionlib.php');
     }
 
+    /**
+     * Tests that resource assignment status is correctly derived from completion states.
+     *
+     * Verifies the mapping between Moodle completion states and internal RA status values.
+     *
+     * @covers \block_fastlearning\local\ra::status_from_completion_state
+     */
     public function test_status_is_derived_from_completion_state(): void {
         $this->assertSame('completed', ra::status_from_completion_state(COMPLETION_COMPLETE));
         $this->assertSame('completed', ra::status_from_completion_state(COMPLETION_COMPLETE_PASS));
@@ -52,6 +59,13 @@ final class ra_management_test extends advanced_testcase {
         $this->assertSame('pending', ra::status_from_completion_state(null));
     }
 
+    /**
+     * Tests that resource assignment deadlines are correctly calculated.
+     *
+     * Validates the deadline calculation formula based on start time and urgency level minutes.
+     *
+     * @covers \block_fastlearning\local\ra::calculate_deadline
+     */
     public function test_deadline_is_calculated_from_start_and_urgency_minutes(): void {
         $start = 1_700_000_000;
         $minutes = 120;
@@ -59,6 +73,14 @@ final class ra_management_test extends advanced_testcase {
         $this->assertSame($start + (120 * 60), ra::calculate_deadline($start, $minutes));
     }
 
+    /**
+     * Tests that display names prioritize editable RA names over competency names.
+     *
+     * Verifies that when a resource assignment has a manually edited name, it takes precedence
+     * over the competency name for display purposes.
+     *
+     * @covers \block_fastlearning\local\ra::get_display_name
+     */
     public function test_uses_editable_name_before_competency_name(): void {
         $ra = (object) [
             'name' => 'Manual RA name',
@@ -70,6 +92,8 @@ final class ra_management_test extends advanced_testcase {
 
     /**
      * The report applies course and user visibility restrictions.
+     *
+     * @covers \block_fastlearning\reportbuilder\local\systemreports\resources
      */
     public function test_resources_report_visibility(): void {
         global $CFG, $DB;

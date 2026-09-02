@@ -25,12 +25,18 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * Tests the AJAX service used by the block to poll for pending resources.
  *
+ * @covers     \block_fastlearning\external\get_pending_resources::execute
  * @package    block_fastlearning
  * @copyright  2026 David Herney @ BambuCo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 #[CoversClass(get_pending_resources::class)]
 final class get_pending_resources_test extends advanced_testcase {
+    /**
+     * Tests that only the current user's pending resources for the specified course are returned.
+     *
+     * @covers \block_fastlearning\external\get_pending_resources::execute
+     */
     public function test_returns_only_the_current_user_pending_resources_for_the_course(): void {
         global $DB;
 

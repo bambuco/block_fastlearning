@@ -34,6 +34,7 @@ final class ra_form_test extends advanced_testcase {
     /**
      * Test that the competency field is optional during form validation.
      *
+     * @covers \block_fastlearning\form\ra_form::validate
      * @return void
      */
     public function test_competency_is_optional_during_validation(): void {
@@ -57,6 +58,7 @@ final class ra_form_test extends advanced_testcase {
     /**
      * Test that the Mustache template renders the form markup correctly without the competency toggle.
      *
+     * @covers \block_fastlearning\form\ra_form
      * @return void
      */
     public function test_mustache_owns_the_form_markup_without_competency_toggle(): void {

@@ -30,6 +30,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(resource_options::class)]
 final class resource_options_test extends advanced_testcase {
+    /**
+     * Tests the eligibility of users based on site and course rules.
+     *
+     * @covers \block_fastlearning\local\resource_options::search_users
+     * @covers \block_fastlearning\local\resource_options::user_is_available
+     */
     public function test_users_follow_site_and_course_eligibility_rules(): void {
         $this->resetAfterTest();
 
@@ -53,6 +59,15 @@ final class resource_options_test extends advanced_testcase {
         $this->assertNotContains((int) $other->id, $courseids);
     }
 
+    /**
+     * Tests that courses and modules returned follow wizard dependency rules.
+     *
+     * Validates that only courses where users are enrolled are returned, hidden modules are excluded,
+     * and competency filtering restricts modules to those with competencies linked.
+     *
+     * @covers \block_fastlearning\local\resource_options::search_user_courses
+     * @covers \block_fastlearning\local\resource_options::search_course_modules
+     */
     public function test_courses_and_modules_follow_wizard_dependencies(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
