@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Spabish language pack for Fast learning
+ * Spanish language pack for Fast learning
  *
  * @package    block_fastlearning
  * @category   string
@@ -79,7 +79,7 @@ $string['noeligibleusers'] = 'No hay estudiantes elegibles en este contexto.';
 $string['nolevels'] = 'No se han creado niveles de urgencia.';
 $string['nothingpending'] = 'No hay recursos de aprendizaje pendientes.';
 $string['nousercourses'] = 'El estudiante seleccionado no está inscrito en ningún curso.';
-$string['open'] = 'Abierto';
+$string['open'] = 'Abrir';
 $string['pluginname'] = 'Recursos de Aprendizaje rápido';
 $string['racreated'] = 'Se creó el recurso de aprendizaje.';
 $string['radeleted'] = 'Se eliminó el recurso de aprendizaje.';

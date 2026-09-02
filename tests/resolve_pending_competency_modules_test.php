@@ -95,6 +95,10 @@ final class resolve_pending_competency_modules_test extends advanced_testcase {
         $withoutcompetencyassignmentid = $createassignment(null, null, null, ra::STATUS_PENDING);
 
         $task = new resolve_pending_competency_modules();
+        $this->expectOutputString(
+            "    Resolved ID {$restrictedassignmentid} with module ID {$firsttargetmodule->cmid}\n" .
+            "    Resolved ID {$globalassignmentid} with module ID {$othermodule->cmid}\n"
+        );
         $task->execute();
 
         $restrictedassignment = $DB->get_record('block_fastlearning_ra', ['id' => $restrictedassignmentid], '*', MUST_EXIST);

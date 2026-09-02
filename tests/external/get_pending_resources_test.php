@@ -67,6 +67,7 @@ final class get_pending_resources_test extends advanced_testcase {
         ]);
 
         $this->setUser($student);
+        $_POST['sesskey'] = sesskey();
         $result = external_api::call_external_function('block_fastlearning_get_pending_resources', [
             'courseid' => $course->id,
         ]);
@@ -78,6 +79,7 @@ final class get_pending_resources_test extends advanced_testcase {
         $this->assertGreaterThan(0, $result['data']['items'][0]['remainingseconds']);
 
         $this->setUser($other);
+        $_POST['sesskey'] = sesskey();
         $emptyresult = external_api::call_external_function('block_fastlearning_get_pending_resources', [
             'courseid' => $course->id,
         ]);
