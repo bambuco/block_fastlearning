@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-md-9 d-flex flex-wrap align-items-start felement">
                     <select id="id_userid" name="userid" class="form-select" data-courseid="{{courseid}}">
-                        <option value=""></option>
+                        <option value="">{{#str}}selectuser, block_fastlearning{{/str}}</option>
                         {{#users}}
                             <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                         {{/users}}
@@ -98,7 +98,7 @@
                     </div>
                     <div class="col-md-9 d-flex flex-wrap align-items-start felement">
                         <select id="id_competencyid" name="competencyid" class="form-select">
-                            <option value=""></option>
+                            <option value="">{{#str}}selectcompetency, block_fastlearning{{/str}}</option>
                             {{#competencies}}
                                 <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                             {{/competencies}}
@@ -162,7 +162,7 @@
                 </div>
                 <div class="col-md-9 d-flex flex-wrap align-items-start felement">
                     <select id="id_modulecourseid" name="modulecourseid" class="form-select">
-                        <option value=""></option>
+                        <option value="">{{#str}}selectcourse, block_fastlearning{{/str}}</option>
                         {{#courses}}
                             <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                         {{/courses}}
@@ -183,7 +183,7 @@
             </div>
             <div class="col-md-9 d-flex flex-wrap align-items-start felement">
                 <select id="id_cmid" name="cmid" class="form-select" data-contextcourseid="{{courseid}}">
-                    <option value=""></option>
+                    <option value="">{{#str}}selectcm, block_fastlearning{{/str}}</option>
                     {{#coursemodules}}
                         <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                     {{/coursemodules}}

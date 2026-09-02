@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace block_fastlearning\tests;
+namespace block_fastlearning;
 
 use advanced_testcase;
 use block_fastlearning\local\ra;

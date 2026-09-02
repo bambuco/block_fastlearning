@@ -43,10 +43,10 @@ class api {
      * @param int $urgencylevel Numeric priority level (0 is highest).
      * @param string|null $name Descriptive name override.
      * @param bool $autoresolvecm Whether to auto-resolve cmid from competency.
-    * @param string|null $component Component that created the RA.
-    * @param int|null $itemid Source item ID in the component.
+     * @param string|null $component Component that created the RA.
+     * @param int|null $itemid Source item ID in the component.
      * @return object The created block_fastlearning_ra record.
-    * @throws invalid_parameter_exception If user or source reference is invalid.
+     * @throws invalid_parameter_exception If user or source reference is invalid.
      */
     public static function report_resource_need(
         int $userid,

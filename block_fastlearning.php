@@ -27,7 +27,6 @@ use block_fastlearning\output\renderer;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_fastlearning extends block_base {
-
     /**
      * Configure block title.
      */

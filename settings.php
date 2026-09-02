@@ -21,6 +21,9 @@
  * @copyright  2026 David Herney @ BambuCo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
+
 $settings = new admin_category('block_fastlearning_settings', get_string('pluginname', 'block_fastlearning'));
 $generalsettings = new admin_settingpage('block_fastlearning', get_string('settings', 'block_fastlearning'));
 

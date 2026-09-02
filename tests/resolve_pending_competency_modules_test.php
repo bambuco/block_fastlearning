@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace block_fastlearning\tests;
+namespace block_fastlearning;
 
 use advanced_testcase;
 use block_fastlearning\local\ra;
@@ -73,7 +73,7 @@ final class resolve_pending_competency_modules_test extends advanced_testcase {
         core_competency_api::add_competency_to_course_module($firsttargetmodule->cmid, $competency->get('id'));
 
         $now = time();
-        $createassignment = function(?int $courseid, ?int $cmid, ?int $competencyid, string $status) use ($DB, $student, $now): int {
+        $createassign = function (?int $courseid, ?int $cmid, ?int $competencyid, string $status) use ($DB, $student, $now): int {
             return (int) $DB->insert_record('block_fastlearning_ra', (object) [
                 'userid' => $student->id,
                 'courseid' => $courseid,
@@ -87,12 +87,12 @@ final class resolve_pending_competency_modules_test extends advanced_testcase {
             ]);
         };
 
-        $restrictedassignmentid = $createassignment($targetcourse->id, null, $competency->get('id'), ra::STATUS_PENDING);
-        $globalassignmentid = $createassignment(null, null, $competency->get('id'), ra::STATUS_PENDING);
-        $unmatchedassignmentid = $createassignment(null, null, $unmatchedcompetency->get('id'), ra::STATUS_PENDING);
-        $completedassignmentid = $createassignment(null, null, $competency->get('id'), ra::STATUS_COMPLETED);
-        $assignedassignmentid = $createassignment(null, $othermodule->cmid, $competency->get('id'), ra::STATUS_PENDING);
-        $withoutcompetencyassignmentid = $createassignment(null, null, null, ra::STATUS_PENDING);
+        $restrictedassignmentid = $createassign($targetcourse->id, null, $competency->get('id'), ra::STATUS_PENDING);
+        $globalassignmentid = $createassign(null, null, $competency->get('id'), ra::STATUS_PENDING);
+        $unmatchedassignmentid = $createassign(null, null, $unmatchedcompetency->get('id'), ra::STATUS_PENDING);
+        $completedassignmentid = $createassign(null, null, $competency->get('id'), ra::STATUS_COMPLETED);
+        $assignedassignmentid = $createassign(null, $othermodule->cmid, $competency->get('id'), ra::STATUS_PENDING);
+        $withoutcompetencyassignmentid = $createassign(null, null, null, ra::STATUS_PENDING);
 
         $task = new resolve_pending_competency_modules();
         $this->expectOutputString(

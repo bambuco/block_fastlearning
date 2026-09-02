@@ -195,18 +195,18 @@ class urgencylevel {
     public static function format_minutes(int $minutes): string {
         if ($minutes < 60) {
             return get_string('minutesformat', 'block_fastlearning', $minutes);
-        } elseif ($minutes < 1440) {
+        } else if ($minutes < 1440) {
             $hours = floor($minutes / 60);
-            $remainingMinutes = $minutes % 60;
-            return get_string('hoursandminutesformat', 'block_fastlearning', ['hours' => $hours, 'minutes' => $remainingMinutes]);
+            $remainingminutes = $minutes % 60;
+            return get_string('hoursandminutesformat', 'block_fastlearning', ['hours' => $hours, 'minutes' => $remainingminutes]);
         } else {
             $days = floor($minutes / 1440);
-            $remainingHours = floor(($minutes % 1440) / 60);
-            $remainingMinutes = $minutes % 60;
+            $remaininghours = floor(($minutes % 1440) / 60);
+            $remainingminutes = $minutes % 60;
             return get_string(
                 'dayshoursandminutesformat',
                 'block_fastlearning',
-                ['days' => $days, 'hours' => $remainingHours, 'minutes' => $remainingMinutes]
+                ['days' => $days, 'hours' => $remaininghours, 'minutes' => $remainingminutes]
             );
         }
     }

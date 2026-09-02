@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace block_fastlearning\tests;
+namespace block_fastlearning;
 
 use advanced_testcase;
 use block_fastlearning\external\delete_level;
 use block_fastlearning\external\reorder_levels;
 use block_fastlearning\external\save_level;
 use block_fastlearning\local\urgencylevel;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * Tests for urgency-level management.
@@ -29,6 +30,9 @@ use block_fastlearning\local\urgencylevel;
  * @copyright  2026 David Herney @ BambuCo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[CoversClass(save_level::class)]
+#[CoversClass(reorder_levels::class)]
+#[CoversClass(delete_level::class)]
 final class urgencylevel_test extends advanced_testcase {
     /**
      * The AJAX service creates and updates a level.
