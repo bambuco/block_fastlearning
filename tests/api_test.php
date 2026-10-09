@@ -174,4 +174,194 @@ final class api_test extends advanced_testcase {
         $this->expectException(invalid_parameter_exception::class);
         fastlearning_api::report_resource_need(userid: 999999);
     }
+
+    /**
+     * Tests that unused modules are preferred over previously assigned ones.
+     *
+     * @covers \block_fastlearning\local\api::resolve_competency_module
+     */
+    public function test_resolve_competency_module_prefers_unassigned(): void {
+        global $CFG, $DB;
+        require_once($CFG->libdir . '/completionlib.php');
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $student = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($student->id, $course->id);
+
+        $firstpage = $this->getDataGenerator()->create_module('page', [
+            'course' => $course->id,
+            'name' => 'First page',
+            'visible' => 1,
+        ]);
+        $secondpage = $this->getDataGenerator()->create_module('page', [
+            'course' => $course->id,
+            'name' => 'Second page',
+            'visible' => 1,
+        ]);
+
+        /** @var \core_competency_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_competency');
+        $framework = $generator->create_framework();
+        $competency = $generator->create_competency([
+            'competencyframeworkid' => $framework->get('id'),
+        ]);
+        core_competency_api::add_competency_to_course($course->id, $competency->get('id'));
+        core_competency_api::add_competency_to_course_module($firstpage->cmid, $competency->get('id'));
+        core_competency_api::add_competency_to_course_module($secondpage->cmid, $competency->get('id'));
+
+        $now = time();
+        $DB->insert_record('block_fastlearning_ra', (object) [
+            'userid' => $student->id,
+            'courseid' => $course->id,
+            'cmid' => $firstpage->cmid,
+            'global' => 1,
+            'competencyid' => $competency->get('id'),
+            'urgencylevel' => 0,
+            'status' => 'pending',
+            'timeassigned' => $now,
+            'timecreated' => $now,
+            'timemodified' => $now,
+        ]);
+
+        $resolved = fastlearning_api::resolve_competency_module(
+            (int) $student->id,
+            (int) $competency->get('id')
+        );
+        $this->assertNotNull($resolved);
+        $this->assertEquals((int) $secondpage->cmid, $resolved->cmid);
+    }
+
+    /**
+     * Tests reassignment rules for previously assigned competency modules.
+     *
+     * @covers \block_fastlearning\local\api::resolve_competency_module
+     */
+    public function test_resolve_competency_module_reassign_completed(): void {
+        global $CFG, $DB;
+        require_once($CFG->libdir . '/completionlib.php');
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $student = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($student->id, $course->id);
+
+        $page = $this->getDataGenerator()->create_module('page', [
+            'course' => $course->id,
+            'name' => 'Tracked page',
+            'visible' => 1,
+            'completion' => COMPLETION_TRACKING_MANUAL,
+        ]);
+        $nocompletionpage = $this->getDataGenerator()->create_module('page', [
+            'course' => $course->id,
+            'name' => 'No completion page',
+            'visible' => 1,
+            'completion' => COMPLETION_TRACKING_NONE,
+        ]);
+
+        /** @var \core_competency_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_competency');
+        $framework = $generator->create_framework();
+        $competency = $generator->create_competency([
+            'competencyframeworkid' => $framework->get('id'),
+        ]);
+        $nocompletioncompetency = $generator->create_competency([
+            'competencyframeworkid' => $framework->get('id'),
+        ]);
+        core_competency_api::add_competency_to_course($course->id, $competency->get('id'));
+        core_competency_api::add_competency_to_course($course->id, $nocompletioncompetency->get('id'));
+        core_competency_api::add_competency_to_course_module($page->cmid, $competency->get('id'));
+        core_competency_api::add_competency_to_course_module(
+            $nocompletionpage->cmid,
+            $nocompletioncompetency->get('id')
+        );
+
+        $now = time();
+        $DB->insert_record('block_fastlearning_ra', (object) [
+            'userid' => $student->id,
+            'courseid' => $course->id,
+            'cmid' => $page->cmid,
+            'global' => 1,
+            'competencyid' => $competency->get('id'),
+            'urgencylevel' => 0,
+            'status' => 'pending',
+            'timeassigned' => $now,
+            'timecreated' => $now,
+            'timemodified' => $now,
+        ]);
+        $DB->insert_record('block_fastlearning_ra', (object) [
+            'userid' => $student->id,
+            'courseid' => $course->id,
+            'cmid' => $nocompletionpage->cmid,
+            'global' => 1,
+            'competencyid' => $nocompletioncompetency->get('id'),
+            'urgencylevel' => 0,
+            'status' => 'pending',
+            'timeassigned' => $now,
+            'timecreated' => $now,
+            'timemodified' => $now,
+        ]);
+
+        // Setting disabled: previously assigned modules are never reused.
+        set_config('reassign_completed', 0, 'block_fastlearning');
+        $this->assertNull(fastlearning_api::resolve_competency_module(
+            (int) $student->id,
+            (int) $competency->get('id')
+        ));
+
+        set_config('reassign_completed', 1, 'block_fastlearning');
+
+        // Completion tracking disabled on the module: cannot reassign.
+        $this->assertNull(fastlearning_api::resolve_competency_module(
+            (int) $student->id,
+            (int) $nocompletioncompetency->get('id')
+        ));
+
+        $setcompletionstate = function (int $state) use ($DB, $page, $student): void {
+            $existing = $DB->get_record('course_modules_completion', [
+                'coursemoduleid' => $page->cmid,
+                'userid' => $student->id,
+            ]);
+            if ($existing) {
+                $existing->completionstate = $state;
+                $existing->timemodified = time();
+                $DB->update_record('course_modules_completion', $existing);
+            } else {
+                $DB->insert_record('course_modules_completion', (object) [
+                    'coursemoduleid' => $page->cmid,
+                    'userid' => $student->id,
+                    'completionstate' => $state,
+                    'timemodified' => time(),
+                ]);
+            }
+            \cache::make('core', 'completion')->purge();
+        };
+
+        // Incomplete: cannot reassign.
+        $this->assertNull(fastlearning_api::resolve_competency_module(
+            (int) $student->id,
+            (int) $competency->get('id')
+        ));
+
+        // Failed completion: cannot reassign.
+        $setcompletionstate(COMPLETION_COMPLETE_FAIL);
+        $this->assertNull(fastlearning_api::resolve_competency_module(
+            (int) $student->id,
+            (int) $competency->get('id')
+        ));
+
+        // Completed: can reassign.
+        $setcompletionstate(COMPLETION_COMPLETE);
+        $resolved = fastlearning_api::resolve_competency_module(
+            (int) $student->id,
+            (int) $competency->get('id')
+        );
+        $this->assertNotNull($resolved);
+        $this->assertEquals((int) $page->cmid, $resolved->cmid);
+        $this->assertEquals((int) $course->id, $resolved->courseid);
+    }
 }

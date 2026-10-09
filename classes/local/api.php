@@ -142,6 +142,10 @@ class api {
     /**
      * Resolve a course module linked to a competency for a given user or course.
      *
+     * Prefers modules that have never been assigned to the user. Previously assigned
+     * modules are only reused when the reassign_completed setting is enabled and the
+     * activity has completion tracking with a completed state for the user.
+     *
      * @param int $userid User id.
      * @param int $competencyid Competency id.
      * @param int|null $courseid Specific course id, optional.
@@ -154,6 +158,7 @@ class api {
     ): ?object {
         global $CFG, $DB;
         require_once($CFG->libdir . '/enrollib.php');
+        require_once($CFG->libdir . '/completionlib.php');
 
         $allowedcourseids = [];
         if ($courseid !== null && $courseid > 0 && $courseid !== (int) SITEID) {
@@ -180,14 +185,58 @@ class api {
               ORDER BY cm.id ASC";
 
         $params = array_merge(['competencyid' => $competencyid], $inparams);
-        $records = $DB->get_records_sql($sql, $params, 0, 1);
+        $candidates = $DB->get_records_sql($sql, $params);
+        if (empty($candidates)) {
+            return null;
+        }
 
-        if (!empty($records)) {
-            $first = reset($records);
-            return (object) [
-                'cmid' => (int) $first->cmid,
-                'courseid' => (int) $first->courseid,
-            ];
+        $assignedcmids = $DB->get_fieldset_select(
+            'block_fastlearning_ra',
+            'cmid',
+            'userid = :userid AND cmid IS NOT NULL',
+            ['userid' => $userid]
+        );
+        $assignedcmids = array_fill_keys(array_map('intval', $assignedcmids), true);
+
+        $previouslyassigned = [];
+        foreach ($candidates as $candidate) {
+            $cmid = (int) $candidate->cmid;
+            if (!isset($assignedcmids[$cmid])) {
+                return (object) [
+                    'cmid' => $cmid,
+                    'courseid' => (int) $candidate->courseid,
+                ];
+            }
+            $previouslyassigned[] = $candidate;
+        }
+
+        if (!get_config('block_fastlearning', 'reassign_completed')) {
+            return null;
+        }
+
+        $completioncache = [];
+        foreach ($previouslyassigned as $candidate) {
+            $cmid = (int) $candidate->cmid;
+            $courseidvalue = (int) $candidate->courseid;
+
+            if (!isset($completioncache[$courseidvalue])) {
+                $course = get_course($courseidvalue);
+                $completioncache[$courseidvalue] = new \completion_info($course);
+            }
+            $completion = $completioncache[$courseidvalue];
+            $cm = get_coursemodule_from_id('', $cmid, $courseidvalue, false, IGNORE_MISSING);
+            if (!$cm || !$completion->is_enabled($cm)) {
+                continue;
+            }
+
+            $completiondata = $completion->get_data($cm, false, $userid);
+            $status = ra::status_from_completion_state((int) $completiondata->completionstate);
+            if ($status === ra::STATUS_COMPLETED) {
+                return (object) [
+                    'cmid' => $cmid,
+                    'courseid' => $courseidvalue,
+                ];
+            }
         }
 
         return null;

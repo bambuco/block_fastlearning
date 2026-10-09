@@ -47,6 +47,13 @@ if ($ADMIN->fulltree) {
         60,
         MINSECS
     ));
+
+    $generalsettings->add(new admin_setting_configcheckbox(
+        'block_fastlearning/reassign_completed',
+        get_string('reassign_completed', 'block_fastlearning'),
+        get_string('reassign_completed_desc', 'block_fastlearning'),
+        0
+    ));
 }
 
 $settings->add('block_fastlearning_settings', $generalsettings);

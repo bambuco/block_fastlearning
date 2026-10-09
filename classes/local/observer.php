@@ -35,6 +35,10 @@ class observer {
     public static function course_module_completion_updated(course_module_completion_updated $event): void {
         global $DB;
 
+        if (!property_exists($event, 'coursemoduleid')) {
+            return;
+        }
+
         $pendingrecords = $DB->get_records(
             'block_fastlearning_ra',
             ['cmid' => $event->coursemoduleid, 'status' => ra::STATUS_PENDING]

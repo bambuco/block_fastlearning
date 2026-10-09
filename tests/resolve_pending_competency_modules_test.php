@@ -104,9 +104,11 @@ final class resolve_pending_competency_modules_test extends advanced_testcase {
         $withoutcompetencyassignmentid = $createassign(null, null, null, ra::STATUS_PENDING);
 
         $task = new resolve_pending_competency_modules();
+        // Global candidates are already assigned to this student (othermodule and firsttargetmodule
+        // after the restricted assignment resolves), so with reassign_completed disabled the global
+        // entry stays without a module.
         $this->expectOutputString(
-            "    Resolved ID {$restrictedassignmentid} with module ID {$firsttargetmodule->cmid}\n" .
-            "    Resolved ID {$globalassignmentid} with module ID {$othermodule->cmid}\n"
+            "    Resolved ID {$restrictedassignmentid} with module ID {$firsttargetmodule->cmid}\n"
         );
         $task->execute();
 
@@ -117,8 +119,8 @@ final class resolve_pending_competency_modules_test extends advanced_testcase {
         $this->assertGreaterThanOrEqual($now, $restrictedassignment->timemodified);
 
         $globalassignment = $DB->get_record('block_fastlearning_ra', ['id' => $globalassignmentid], '*', MUST_EXIST);
-        $this->assertEquals($othermodule->cmid, $globalassignment->cmid);
-        $this->assertEquals($othercourse->id, $globalassignment->courseid);
+        $this->assertNull($globalassignment->cmid);
+        $this->assertNull($globalassignment->timeassigned);
 
         foreach ([$unmatchedassignmentid, $completedassignmentid, $withoutcompetencyassignmentid] as $assignmentid) {
             $assignment = $DB->get_record('block_fastlearning_ra', ['id' => $assignmentid], '*', MUST_EXIST);
